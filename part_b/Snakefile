@@ -1,0 +1,46 @@
+# Activate conda env, set minimal viable threads, export correct environments variables
+
+rule all:
+    input:
+        "outputs/summary.csv"
+
+rule schema_check:
+    input:
+        rna      = "data/rna.csv",
+        variants = "data/variants.csv",
+        coldata  = "data/colData.csv"
+    output:
+        ok = "outputs/schema_ok.txt"
+    log:
+        "outputs/logs/schema_check.log"
+    shell:
+        r"""
+        set -euo pipefail
+        mkdir -p outputs logs
+        export RNA_PATH=""
+        export VARIANTS_PATH=""
+        export COLDATA_PATH=""
+        export OUT_OK=""
+        Rscript scripts/check_schema.R > {log} 2>&1
+        """
+
+rule generate_summary:
+    input:
+        rna      = "data/rna.csv",
+        variants = "data/variants.csv",
+        coldata  = "data/colData.csv",
+        ok       = "outputs/schema_ok.txt"
+    output:
+        summary  = "outputs/summary.csv"
+    log:
+        "outputs/logs/generate_summary.log"
+    shell:
+        r"""
+        set -euo pipefail
+        mkdir -p outputs logs
+        export RNA_PATH=""
+        export VARIANTS_PATH=""
+        export COLDATA_PATH=""
+        export OUT_PATH=""
+        Rscript scripts/run_etl.R > {log} 2>&1
+        """
