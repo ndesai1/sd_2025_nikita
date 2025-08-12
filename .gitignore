@@ -1,0 +1,10 @@
+__pycache__
+.snakemake
+.DS_Store
+
+# Solved
+Snakefile_complete
+complete_scripts
+problem_solved.py
+problem_solved.r
+completed.bash
